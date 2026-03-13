@@ -1,0 +1,25 @@
+{
+  "name": "tiendavirtual",
+  "version": "1.0.0",
+  "description": "Creacion de API REST para una tienda virtual",
+  "homepage": "https://github.com/MonicaRomero003/BackEnd_TiendaVirtual#readme",
+  "bugs": {
+    "url": "https://github.com/MonicaRomero003/BackEnd_TiendaVirtual/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MonicaRomero003/BackEnd_TiendaVirtual.git"
+  },
+  "license": "ISC",
+  "author": "Monica Itzel Romero Calva",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "express": "^5.2.1",
+    "morgan": "^1.10.1"
+  }
+}
