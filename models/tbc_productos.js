@@ -38,5 +38,14 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'tbc_productos',
   });
+
+  tbc_productos.associate = function(models) {
+    tbc_productos.belongsTo(models.tbc_categorias,
+      {
+        as : 'tbc_categorias',
+        foreignKey: 'id_categoria',
+      }
+    );  
+  };
   return tbc_productos;
 };
