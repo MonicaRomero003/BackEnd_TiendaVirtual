@@ -12,10 +12,22 @@ module.exports = {
       id_carrito: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'tbc_carritos',
+          key: 'id'
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION'
       },
       id_producto: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: 'tbc_productos',
+          key: 'id'
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION'
       },
       precio_unitario: {
         type: Sequelize.DECIMAL(10, 2),

@@ -45,7 +45,12 @@ module.exports = (sequelize, DataTypes) => {
         as : 'tbc_categorias',
         foreignKey: 'id_categoria',
       }
-    );  
+    );
+
+    tbc_productos.hasMany(models.tbc_carrito_detalle, {
+      as: 'tbc_carrito_detalle',
+      foreignKey: 'id_producto'
+    });
   };
   return tbc_productos;
 };

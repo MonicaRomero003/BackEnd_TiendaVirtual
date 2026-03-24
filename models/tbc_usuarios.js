@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      tbc_usuarios.hasMany(models.tbc_carritos, {
+        as: 'tbc_carritos',
+        foreignKey: 'id_usuario'
+      });
     }
   }
   tbc_usuarios.init({
