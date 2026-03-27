@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   tbc_carritos.init({
     fecha_creacion: {
-      type: DataTypes.Date,
+      type: DataTypes.DATE,
       allowNull: false
     },
     total: {
