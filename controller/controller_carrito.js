@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const carrito = require('../models/tbc_carrito');
+const db = require('../models');
+const carrito = db.tbc_carritos;
 
 module.exports = {
     create(req, res){
@@ -18,12 +18,16 @@ module.exports = {
             .catch(error => res.status(400).send(error));
     },
     find(req, res){
-        return carrito.findAll({
-            where: {
-                id: req.params.id,
-            }
-        })
-            .then(carrito => res.status(200).send(carrito))
+        return carrito.findByPk(req.params.id)
+            .then(carritoEncontrado => {
+                if (!carritoEncontrado) {
+                    return res.status(404).send({
+                        message: 'Carrito no encontrado'
+                    });
+                }
+
+                return res.status(200).send(carritoEncontrado);
+            })
             .catch(error => res.status(400).send(error));
     },
     update(req, res){
@@ -37,9 +41,9 @@ module.exports = {
 
                 return carritoEncontrado
                     .update({
-                        fecha_creacion: req.body.fecha_creacion || carritoEncontrado.fecha_creacion,
-                        total: req.body.total || carritoEncontrado.total,
-                        id_usuario: req.body.id_usuario || carritoEncontrado.id_usuario,
+                        fecha_creacion: req.body.fecha_creacion ?? carritoEncontrado.fecha_creacion,
+                        total: req.body.total ?? carritoEncontrado.total,
+                        id_usuario: req.body.id_usuario ?? carritoEncontrado.id_usuario,
                     })
                     .then(carritoActualizado => res.status(200).send(carritoActualizado))
                     .catch(error => res.status(400).send(error));

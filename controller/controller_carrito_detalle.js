@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const carritoDetalle = require('../models/tbc_carrito_detalle');
+const db = require('../models');
+const carritoDetalle = db.tbc_carrito_detalle;
 
 module.exports = {
     create(req, res){
@@ -19,12 +19,16 @@ module.exports = {
             .catch(error => res.status(400).send(error));
     },
     find(req, res){
-        return carritoDetalle.findAll({
-            where: {
-                id: req.params.id,
-            }
-        })
-            .then(carritoDetalle => res.status(200).send(carritoDetalle))
+        return carritoDetalle.findByPk(req.params.id)
+            .then(carritoDetalleEncontrado => {
+                if (!carritoDetalleEncontrado) {
+                    return res.status(404).send({
+                        message: 'Detalle de carrito no encontrado'
+                    });
+                }
+
+                return res.status(200).send(carritoDetalleEncontrado);
+            })
             .catch(error => res.status(400).send(error));
     },
     update(req, res){
@@ -38,10 +42,10 @@ module.exports = {
 
                 return carritoDetalleEncontrado
                     .update({
-                        id_carrito: req.body.id_carrito || carritoDetalleEncontrado.id_carrito,
-                        id_producto: req.body.id_producto || carritoDetalleEncontrado.id_producto,
-                        precio_unitario: req.body.precio_unitario || carritoDetalleEncontrado.precio_unitario,
-                        cantidad: req.body.cantidad || carritoDetalleEncontrado.cantidad,
+                        id_carrito: req.body.id_carrito ?? carritoDetalleEncontrado.id_carrito,
+                        id_producto: req.body.id_producto ?? carritoDetalleEncontrado.id_producto,
+                        precio_unitario: req.body.precio_unitario ?? carritoDetalleEncontrado.precio_unitario,
+                        cantidad: req.body.cantidad ?? carritoDetalleEncontrado.cantidad,
                     })
                     .then(carritoDetalleActualizado => res.status(200).send(carritoDetalleActualizado))
                     .catch(error => res.status(400).send(error));

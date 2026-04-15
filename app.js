@@ -14,6 +14,10 @@ app.get('/', (req, res) => res.status(200).send({
 }));
 
 require('./routes/route_categorias')(app);
+require('./routes/route_usuarios')(app);
+require('./routes/route_productos')(app);
+require('./routes/route_carritos')(app);
+require('./routes/route_carrito_detalle')(app);
 
 const port = parseInt(process.env.PORT, 10) || 8000;
 app.set('port', port);

@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const usuario = require('../models/tbc_usuario');
+const db = require('../models');
+const usuario = db.tbc_usuarios;
 
 module.exports = {
     create(req, res){
@@ -22,12 +22,16 @@ module.exports = {
             .catch(error => res.status(400).send(error));
     },
     find(req, res){
-        return usuario.findAll({
-            where: {
-                id: req.params.id,
-            }
-        })
-            .then(usuario => res.status(200).send(usuario))
+        return usuario.findByPk(req.params.id)
+            .then(usuarioEncontrado => {
+                if (!usuarioEncontrado) {
+                    return res.status(404).send({
+                        message: 'Usuario no encontrado'
+                    });
+                }
+
+                return res.status(200).send(usuarioEncontrado);
+            })
             .catch(error => res.status(400).send(error));
     },
     update(req, res){
@@ -40,14 +44,14 @@ module.exports = {
                 }
 
                 return usuarioEncontrado
-                    .update({
-                        nombre: req.body.nombre || usuarioEncontrado.nombre,
-                        direccion: req.body.direccion || usuarioEncontrado.direccion,
-                        telefono: req.body.telefono || usuarioEncontrado.telefono,
-                        email: req.body.email || usuarioEncontrado.email,
-                        password: req.body.password || usuarioEncontrado.password,
-                        rol: req.body.rol || usuarioEncontrado.rol,
-                        fecha_registro: req.body.fecha_registro || usuarioEncontrado.fecha_registro,
+                        .update({
+                            nombre: req.body.nombre ?? usuarioEncontrado.nombre,
+                            direccion: req.body.direccion ?? usuarioEncontrado.direccion,
+                            telefono: req.body.telefono ?? usuarioEncontrado.telefono,
+                            email: req.body.email ?? usuarioEncontrado.email,
+                            password: req.body.password ?? usuarioEncontrado.password,
+                            rol: req.body.rol ?? usuarioEncontrado.rol,
+                            fecha_registro: req.body.fecha_registro ?? usuarioEncontrado.fecha_registro,
                     })
                     .then(usuarioActualizado => res.status(200).send(usuarioActualizado))
                     .catch(error => res.status(400).send(error));

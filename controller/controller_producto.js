@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const productoc = require('../models/tbc_producto');
+const db = require('../models');
+const producto = db.tbc_productos;
 
 module.exports = {
     create(req, res){
@@ -20,12 +20,16 @@ module.exports = {
             .catch(error => res.status(400).send(error));
     },
     find(req, res){
-        return producto.findAll({
-            where: {
-                id: req.params.id,
-            }
-        })
-            .then(producto => res.status(200).send(producto))
+        return producto.findByPk(req.params.id)
+            .then(productoEncontrado => {
+                if (!productoEncontrado) {
+                    return res.status(404).send({
+                        message: 'Producto no encontrado'
+                    });
+                }
+
+                return res.status(200).send(productoEncontrado);
+            })
             .catch(error => res.status(400).send(error));
     },
     update(req, res){
@@ -39,11 +43,11 @@ module.exports = {
 
                 return productoEncontrado
                     .update({
-                        nombre: req.body.nombre || productoEncontrado.nombre,
-                        descripcion: req.body.descripcion || productoEncontrado.descripcion,
-                        precio: req.body.precio || productoEncontrado.precio,
-                        stock: req.body.stock || productoEncontrado.stock,
-                        id_categoria: req.body.id_categoria || productoEncontrado.id_categoria,
+                        nombre: req.body.nombre ?? productoEncontrado.nombre,
+                        descripcion: req.body.descripcion ?? productoEncontrado.descripcion,
+                        precio: req.body.precio ?? productoEncontrado.precio,
+                        stock: req.body.stock ?? productoEncontrado.stock,
+                        id_categoria: req.body.id_categoria ?? productoEncontrado.id_categoria,
                     })
                     .then(productoActualizado => res.status(200).send(productoActualizado))
                     .catch(error => res.status(400).send(error));
