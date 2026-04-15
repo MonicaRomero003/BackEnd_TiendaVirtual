@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const db= require('../models')
 const categoria = db.tbc_categorias;
+const { Op } = db.Sequelize;
 
 
 
@@ -14,8 +15,20 @@ module.exports = {
         //.then(categoria => res.status(200).send({message: "Datos creados correctamente", categoria}))
         .catch(error => res.status(400).send(error))
     },
-    list(_, res){
-        return categoria.findAll({})
+    list(req, res){
+        const { nombre, q } = req.query;
+        const where = {};
+
+        if (nombre || q) {
+            const termino = (nombre || q).trim();
+            if (termino) {
+                where.nombre = {
+                    [Op.like]: `%${termino}%`
+                };
+            }
+        }
+
+        return categoria.findAll({ where })
             .then(categoria => res.status(200).send(categoria))
             .catch(error => res.status(400).send(error))
     },

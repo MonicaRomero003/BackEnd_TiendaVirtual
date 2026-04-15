@@ -1,5 +1,6 @@
 const db = require('../models');
 const usuario = db.tbc_usuarios;
+const { Op } = db.Sequelize;
 
 module.exports = {
     create(req, res){
@@ -16,8 +17,55 @@ module.exports = {
             .then(usuario => res.status(200).send(usuario))
             .catch(error => res.status(400).send(error));
     },
-    list(_, res){
-        return usuario.findAll({})
+    list(req, res){
+        const {
+            nombre,
+            q,
+            email,
+            telefono,
+            rol,
+            fechaDesde,
+            fechaHasta,
+        } = req.query;
+
+        const where = {};
+
+        if (nombre || q) {
+            const termino = (nombre || q).trim();
+            if (termino) {
+                where.nombre = {
+                    [Op.like]: `%${termino}%`
+                };
+            }
+        }
+
+        if (email) {
+            where.email = {
+                [Op.like]: `%${email.trim()}%`
+            };
+        }
+
+        if (telefono) {
+            where.telefono = {
+                [Op.like]: `%${telefono.trim()}%`
+            };
+        }
+
+        if (rol) {
+            where.rol = rol;
+        }
+
+        if (fechaDesde || fechaHasta) {
+            where.fecha_registro = {};
+            if (fechaDesde) {
+                where.fecha_registro[Op.gte] = new Date(fechaDesde);
+            }
+            if (fechaHasta) {
+                where.fecha_registro[Op.lte] = new Date(fechaHasta);
+            }
+        }
+
+        return usuario.findAll({ where })
             .then(usuarios => res.status(200).send(usuarios))
             .catch(error => res.status(400).send(error));
     },
