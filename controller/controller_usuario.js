@@ -1,6 +1,7 @@
 const db = require('../models');
 const usuario = db.tbc_usuarios;
 const { Op } = db.Sequelize;
+const jwt = require('jsonwebtoken');
 
 module.exports = {
     create(req, res){
@@ -121,6 +122,44 @@ module.exports = {
                         message: 'Usuario eliminado correctamente'
                     }))
                     .catch(error => res.status(400).send(error));
+            })
+            .catch(error => res.status(400).send(error));
+    },
+    login(req, res){
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).send({
+                message: 'El correo y la contrasena son obligatorios'
+            });
+        }
+
+        return usuario.findOne({
+            where: {
+                email: email.trim()
+            }
+        })
+            .then(usuarioEncontrado => {
+                if (!usuarioEncontrado || usuarioEncontrado.password !== password) {
+                    return res.status(401).send({
+                        message: 'Credenciales invalidas'
+                    });
+                }
+
+                const jwtSecret = process.env.JWT_SECRET || 'dev_secret_change_me';
+                const token = jwt.sign(
+                    {
+                        id: usuarioEncontrado.id,
+                        email: usuarioEncontrado.email,
+                        rol: usuarioEncontrado.rol,
+                    },
+                    jwtSecret,
+                    { expiresIn: '8h' }
+                );
+
+                return res.status(200).send({
+                    token
+                });
             })
             .catch(error => res.status(400).send(error));
     }
