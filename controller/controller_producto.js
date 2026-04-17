@@ -8,6 +8,7 @@ module.exports = {
             .create({
                 nombre: req.body.nombre,
                 descripcion: req.body.descripcion,
+                imagen: req.body.imagen,
                 precio: req.body.precio,
                 stock: req.body.stock,
                 id_categoria: req.body.id_categoria,
@@ -92,6 +93,7 @@ module.exports = {
                     .update({
                         nombre: req.body.nombre ?? productoEncontrado.nombre,
                         descripcion: req.body.descripcion ?? productoEncontrado.descripcion,
+                        imagen: req.body.imagen ?? productoEncontrado.imagen,
                         precio: req.body.precio ?? productoEncontrado.precio,
                         stock: req.body.stock ?? productoEncontrado.stock,
                         id_categoria: req.body.id_categoria ?? productoEncontrado.id_categoria,
